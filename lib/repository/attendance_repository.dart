@@ -46,7 +46,7 @@ class AttendanceRepository {
     for (var el in courseAttendancesList){
       for (var i=0; i<el.attendanceList.length; i++) {
         _attendanceList.addValues(el.courseName, Iterable.castFrom(
-              ["${el.getCourseType(i)}     ${el.getCourseData(i).toString().substring(0, 16)}     Course number: ${el.getCourseNumber(i)}"]));
+              ["${el.getCourseType(i)} +: ${el.getCourseNumber(i)}     ${el.getCourseData(i).toString().substring(0, 16)}"]));
         }
     }
 

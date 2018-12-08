@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:barcode_scan/barcode_scan.dart';
-import 'package:simple_permissions/simple_permissions.dart';
+import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:quiver/collection.dart';
 
 import '../presenters/main_page_presenter.dart';
@@ -55,31 +54,20 @@ class MainPageState extends State<MainPage> implements MainPageView {
     );
   }
 
-
-  _requestPermission() async {
-    Permission permission = Permission.Camera;
-    await SimplePermissions.requestPermission(permission);
-  }
-
   _sendAttendance(var attendanceResult){
     _mainPagePresenter.saveAttendances(attendanceResult.toString());
   }
 
   _scan() async {
     try {
-      var attendanceResult = await BarcodeScanner.scan();
+      var attendanceResult = await QRCodeReader()
+          .setHandlePermissions(true)
+          .setExecuteAfterPermissionGranted(true)
+          .scan();
       print(attendanceResult);
       _sendAttendance(attendanceResult);
-      if (!mounted){
-        return;
-      }
     } on PlatformException catch(e) {
       print("error ${e.toString()}");
-      if (e.code == BarcodeScanner.CameraAccessDenied){
-        _requestPermission();
-      } else {
-        print('error $e');
-      }
     } on FormatException {
       print('user return without scann');
     }
