@@ -15,13 +15,20 @@ class StudentRepository {
           Constants.studentId: "$studentId",
           Constants.studentPassword: "$studentPassword"
         });
-    Map responseData = json.decode(response.body);
-    if (responseData['result'] == 'false') {
-      return new Student('', '', 0, '');
+
+    if (response.statusCode == 200) {
+      Map responseData = json.decode(response.body);
+      if (responseData['result'] == 'false') {
+        return new Student('', '', 0, '');
+      } else {
+        var studentClass = int.parse(
+            responseData['result'][Constants.studentClass].toString());
+        var studentName = responseData['result'][Constants.studentName];
+        return new Student(
+            studentId, studentName, studentClass, studentPassword);
+      }
     } else {
-      var studentClass = int.parse(responseData['result'][Constants.studentClass].toString());
-      var studentName = responseData['result'][Constants.studentName];
-      return new Student(studentId, studentName, studentClass, studentPassword);
+      return new Student('', '', 0, '');
     }
   }
 
