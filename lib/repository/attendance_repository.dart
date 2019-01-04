@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:my_attendances/model/base_student.dart';
 import '../model/attendance.dart';
 import '../model/course.dart';
 import '../model/course_attendances.dart';
@@ -34,7 +35,7 @@ class AttendanceRepository {
           var courseType = attendance[Constants.courseType];
           var courseNumber = attendance[Constants.courseNumber];
           var course =
-              Course(null, courseType, null, null, courseDate, courseNumber);
+              Course(null, courseType, null, null, null, courseDate, courseNumber);
           courseAttendance.addCourse(course);
         }
         courseAttendancesList.add(courseAttendance);
@@ -59,17 +60,22 @@ class AttendanceRepository {
     var attendanceSplit = attendanceString.split("+");
     String courseName = attendanceSplit.elementAt(0);
     String courseType = attendanceSplit.elementAt(1);
-    String courseTeacher = attendanceSplit.elementAt(2);
-    String courseTeacherId = attendanceSplit.elementAt(3);
-    String courseCreatedAt = attendanceSplit.elementAt(4);
-    String courseNumber = attendanceSplit.elementAt(5).toString();
+    String courseClass = attendanceSplit.elementAt(2).toString();
+    String courseTeacher = attendanceSplit.elementAt(3);
+    String courseTeacherId = attendanceSplit.elementAt(4);
+    String courseCreatedAt = attendanceSplit.elementAt(5);
+    String courseNumber = attendanceSplit.elementAt(6).toString();
+    var course = Course(courseName, courseType, courseClass, courseTeacher, courseTeacherId,
+        courseCreatedAt, courseNumber);
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var studentId = sharedPreferences.get(Constants.studentId);
-    var course = Course(courseName, courseType, courseTeacher, courseTeacherId,
-        courseCreatedAt, courseNumber);
+    var studentName = sharedPreferences.get(Constants.studentName);
+    var studentClass = sharedPreferences.get(Constants.studentClass);
+    var student = BaseStudent(studentId, studentName, studentClass);
+
     var attendance = Attendance(
-        DateTime.now().toIso8601String(), studentId, attendanceString, course);
+        DateTime.now().toIso8601String(), attendanceString, course, student);
 
     var response = await http.post(
         Uri.encodeFull(Constants.rootApi + '/attendance/add'),

@@ -3,12 +3,13 @@ import 'package:my_attendances/utils/constants.dart';
 class Course {
   final _name;
   final _type;
+  final _class;
   final _teacher;
   final _teacherId;
   final _createdAt;
   final _number;
 
-  Course(this._name, this._type, this._teacher, this._teacherId, this._createdAt, this._number);
+  Course(this._name, this._type, this._class, this._teacher, this._teacherId, this._createdAt, this._number);
 
 
   get name => _name;
@@ -16,6 +17,7 @@ class Course {
   Course.fromJSON(Map course):
     this._name = course[Constants.courseName],
     this._type = course[Constants.courseType],
+    this._class = course[Constants.courseClass],
     this._teacher = course[Constants.courseTeacher],
     this._teacherId = course[Constants.courseTeacherId],
     this._createdAt = course[Constants.courseCreatedAt],
@@ -25,6 +27,7 @@ class Course {
     Map map = Map<String, dynamic>();
     map[Constants.courseName] = this._name;
     map[Constants.courseType] = this._type;
+    map[Constants.courseClass] = this._class;
     map[Constants.courseTeacher] = this._teacher;
     map[Constants.courseTeacherId] = this._teacherId;
     map[Constants.courseCreatedAt] = this._createdAt;
@@ -42,9 +45,11 @@ class Course {
 
   get number => _number;
 
+  get courseClass => _class;
+
   @override
   String toString() {
-    return 'Course{_name: $_name, _type: $_type, _teacher: $_teacher, _teacherId: $_teacherId, _createdAt: $_createdAt, _number: $_number}';
+    return 'Course{_name: $_name, _type: $_type, , _class: $_class, _teacher: $_teacher, _teacherId: $_teacherId, _createdAt: $_createdAt, _number: $_number}';
   }
 
 

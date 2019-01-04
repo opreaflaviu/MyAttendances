@@ -12,6 +12,7 @@ abstract class Constants {
   static const String studentPassword = "studentPassword";
   static const String studentId = "studentId";
   static const String studentClass = "classId";
+  static const String student = "student";
 
   static const String courseName = "courseName";
   static const String courseType = "courseType";
@@ -19,6 +20,7 @@ abstract class Constants {
   static const String courseTeacherId = "courseTeacherId";
   static const String courseCreatedAt = "courseCreatedAt";
   static const String courseNumber = "courseNumber";
+  static const String courseClass = "courseClass";
   static const String attendanceQR = "attendanceQR";
 
 
