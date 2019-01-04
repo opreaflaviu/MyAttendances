@@ -7,14 +7,12 @@ import '../model/course.dart';
 import '../model/course_attendances.dart';
 import '../utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:quiver/collection.dart';
 
 class AttendanceRepository {
-  Multimap<String, String> _attendanceList;
 
   AttendanceRepository();
 
-  Future<Multimap<String, String>> getAttendanceForStudent() async {
+  Future<List<CourseAttendances>> getAttendanceForStudent() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var studentId = sharedPreferences.get(Constants.studentId);
 
@@ -25,7 +23,6 @@ class AttendanceRepository {
     if (response.statusCode == 200) {
       var responseData = jsonDecode(response.body);
 
-      _attendanceList = Multimap();
       List<CourseAttendances> courseAttendancesList = List();
       for (var data in responseData['result']) {
         var courseName = data[Constants.courseName];
@@ -34,23 +31,14 @@ class AttendanceRepository {
           var courseDate = attendance[Constants.courseCreatedAt];
           var courseType = attendance[Constants.courseType];
           var courseNumber = attendance[Constants.courseNumber];
-          var course =
-              Course(null, courseType, null, null, null, courseDate, courseNumber);
+          var courseTeacher = attendance[Constants.courseTeacher];
+          var course = Course(null, courseType,  null, courseTeacher, null, courseDate, courseNumber);
           courseAttendance.addCourse(course);
         }
         courseAttendancesList.add(courseAttendance);
       }
 
-      for (var el in courseAttendancesList) {
-        for (var i = 0; i < el.attendanceList.length; i++) {
-          _attendanceList.addValues(
-              el.courseName,
-              Iterable.castFrom([
-                "${el.getCourseType(i)} +: ${el.getCourseNumber(i)}     ${el.getCourseData(i).toString().substring(0, 16)}"
-              ]));
-        }
-      }
-      return _attendanceList;
+      return courseAttendancesList;
     } else {
       throw Exception("Error");
     }

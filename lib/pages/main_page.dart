@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:my_attendances/model/course_attendances.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:quiver/collection.dart';
 
@@ -117,14 +118,14 @@ class DisplayAttendances extends StatefulWidget{
 class DisplayAttendancesState extends State<DisplayAttendances> implements AttendanceBodyView{
   Connectivity _connectivity;
   AttendancePagePresenter _attendancePagePresenter;
-  Multimap<String, String> _attendanceList;
+  List<CourseAttendances> _attendanceList;
   bool _isFetching = false;
 
 
   DisplayAttendancesState(){
     _connectivity = new Connectivity();
     _attendancePagePresenter = AttendancePagePresenter(this);
-    _attendanceList = Multimap();
+    _attendanceList = List();
   }
 
 
@@ -143,19 +144,37 @@ class DisplayAttendancesState extends State<DisplayAttendances> implements Atten
                   itemCount: _attendanceList == null ? 0 : _attendanceList
                       .length,
                   itemBuilder: (context, index) {
-                    var name = _attendanceList.keys.elementAt(index);
+                    var attendance = _attendanceList.elementAt(index);
                     return ExpansionTile(
                         title: Padding(
                           padding: EdgeInsets.only(left: 20.0),
-                          child: Text(name),
+                          child: Text(attendance.courseName),
                         ),
 
-                        children: _attendanceList[name].toList()
+                        children: attendance.attendanceList
                             .map((val) =>
                             ListTile(
                               title: Padding(
                                 padding: EdgeInsets.only(left: 20.0),
-                                child: Text(val),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text('${val.type} ${val.number}'),
+                                        Padding(padding: EdgeInsets.all(8.0)),
+                                        Text('${val.teacher}')
+                                      ],
+                                    ),
+                                    Padding(padding: EdgeInsets.all(4.0)),
+                                    Row(mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text('${val.createdAt}'.substring(0, 16)),
+                                      ],
+                                    )
+                                  ],
+                                )
                               ),
                             ),
                         ).toList()
@@ -217,17 +236,18 @@ class DisplayAttendancesState extends State<DisplayAttendances> implements Atten
     }
   }
 
-  @override
-  void onLoadAttendancesComplete(Multimap<String, String> attendanceList) {
-    setState(() {
-      _attendanceList = attendanceList;
-      _isFetching = false;
-    });
-  }
 
   @override
   void onLoadAttendancesError() {
 
+  }
+
+  @override
+  void onLoadAttendancesComplete(List<CourseAttendances> attendanceList) {
+    setState(() {
+      _attendanceList = attendanceList;
+      _isFetching = false;
+    });
   }
 }
 

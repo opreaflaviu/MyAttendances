@@ -1,6 +1,7 @@
+import 'package:my_attendances/model/course_attendances.dart';
 import 'package:quiver/collection.dart';
 
 abstract class AttendanceBodyView {
-  void onLoadAttendancesComplete(Multimap<String, String> attendanceList);
+  void onLoadAttendancesComplete(List<CourseAttendances> attendanceList);
   void onLoadAttendancesError();
 }
