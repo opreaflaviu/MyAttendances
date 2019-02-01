@@ -17,6 +17,10 @@ class LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
+    var _mediaQuery = MediaQuery.of(context);
+    var _widthDP = _mediaQuery.size.width;
+    var _heightDP = _mediaQuery.size.height;
+
     return new Scaffold(
       backgroundColor: ColorsConstants.backgroundColorGreen,
       key: _scaffoldState,
@@ -34,8 +38,8 @@ class LandingPageState extends State<LandingPage> {
                     )
                 ),
                 RaisedButton(
-                    padding: new EdgeInsets.fromLTRB(142.0, 16.0, 142.0, 16.0),
-                    child: new Text("Login", textScaleFactor: 1.5, style: TextStyle(color: ColorsConstants.customBlack)),
+                    padding: new EdgeInsets.fromLTRB(_widthDP * 0.40, _heightDP * 0.02, _widthDP * 0.40, _heightDP * 0.02),
+                    child: new Text("Login", style: TextStyle(color: ColorsConstants.customBlack, fontSize: 20.0)),
                     onPressed: (() => Navigator.of(context).pushNamed('login_page')),
                     splashColor: Colors.white,
                     color: Colors.white,
@@ -44,8 +48,8 @@ class LandingPageState extends State<LandingPage> {
                 ),
                 Padding(padding: new EdgeInsets.only(top: 20.0)),
                 RaisedButton(
-                  padding: new EdgeInsets.fromLTRB(132.0, 16.0, 132.0, 16.0),
-                  child: new Text("Register", textScaleFactor: 1.5, style: TextStyle(color: ColorsConstants.customBlack),),
+                  padding: new EdgeInsets.fromLTRB(_widthDP * 0.37, _heightDP * 0.02, _widthDP * 0.37, _heightDP * 0.02),
+                  child: new Text("Register", style: TextStyle(color: ColorsConstants.customBlack, fontSize: 20.0)),
                   onPressed: (() => Navigator.of(context).pushNamed('register_page')),
                   splashColor: Colors.white,
                   color: Colors.white,
