@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_attendances/repository/student_repository.dart';
 import 'package:my_attendances/utils/colors_constants.dart';
+import 'package:password/password.dart';
 import '../model/student.dart';
 import '../utils/shared_preferences_utils.dart';
 
@@ -43,6 +44,7 @@ class LoginPageState extends State<LoginPage> {
             automaticallyImplyLeading: false),
         body: Center(
           child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
               child: Container(
                 margin: new EdgeInsets.only(right: 32.0, left: 32.0),
                 child: new Column(
@@ -163,8 +165,10 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void _onLoginClick() {
+    var password = Password.hash(_password.text, PBKDF2(blockLength: 32, iterationCount: 1000, desiredKeyLength: 32));
+    print("hash password: $password");
     var studentResponse =
-        new StudentRepository().loginStudent(_number.text, _password.text);
+        new StudentRepository().loginStudent(_number.text, password);
     studentResponse.then((student) {
       print(student);
       _studentIsValid(student) ? _validStudent(student) : _invalidStudent();
@@ -184,7 +188,7 @@ class LoginPageState extends State<LoginPage> {
   }
 
   bool _studentIsValid(Student student) => student.studentName == _name.text &&
-          student.studentPassword == _password.text
+          Password.verify(_password.text, student.studentPassword)
       ? true
       : false;
 

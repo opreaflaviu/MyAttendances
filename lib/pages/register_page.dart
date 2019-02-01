@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_attendances/repository/student_repository.dart';
 import 'package:my_attendances/utils/colors_constants.dart';
+import 'package:password/password.dart';
 import '../model/student.dart';
 import '../utils/shared_preferences_utils.dart';
 
@@ -48,6 +49,7 @@ class RegisterPageState extends State<RegisterPage> {
           automaticallyImplyLeading: false),
       body: Center(
           child: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
         child: Container(
             margin: new EdgeInsets.only(right: 32.0, left: 32.0),
             child: Column(
@@ -139,7 +141,6 @@ class RegisterPageState extends State<RegisterPage> {
                           fontSize: 16.0, color: ColorsConstants.customBlack),
                       controller: _confirmPassword,
                     )),
-
                 new Container(
                   padding: new EdgeInsets.only(top: 16.0),
                 ),
@@ -196,8 +197,13 @@ class RegisterPageState extends State<RegisterPage> {
   void _onRegisterClick() {
     if (_password.text == _confirmPassword.text) {
       if (true) {
+        var password = Password.hash(
+            _password.text,
+            PBKDF2(
+                blockLength: 32, iterationCount: 1000, desiredKeyLength: 32));
+        print("hash password: $password");
         Student student = new Student(
-            _number.text, _name.text, int.parse(_class.text), _password.text);
+            _number.text, _name.text, int.parse(_class.text), password);
         var s = new StudentRepository().registerStudent(student);
         s.then((response) {
           if (response) {
