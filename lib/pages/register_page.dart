@@ -21,14 +21,6 @@ class RegisterPageState extends State<RegisterPage> {
   final GlobalKey<ScaffoldState> _scaffoldState =
       new GlobalKey<ScaffoldState>();
 
-  String _snackBarText = '';
-
-  void _onChange(String snackBarText) {
-    setState(() {
-      _snackBarText = snackBarText;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var _mediaQuery = MediaQuery.of(context);
@@ -49,20 +41,21 @@ class RegisterPageState extends State<RegisterPage> {
           automaticallyImplyLeading: false),
       body: Center(
           child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
         child: Container(
             margin: new EdgeInsets.only(right: 32.0, left: 32.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ListTile(
+                    contentPadding: EdgeInsets.all(0.0),
                     leading:
                         Icon(Icons.person, color: ColorsConstants.customBlack),
                     title: TextField(
                         cursorColor: ColorsConstants.customBlack,
                         decoration: new InputDecoration(
                             hintText: 'Name',
-                            contentPadding: new EdgeInsets.only(bottom: 4.0),
+                            contentPadding: new EdgeInsets.only(bottom: 4.0,
+                                top: 8.0),
                             hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
@@ -73,13 +66,15 @@ class RegisterPageState extends State<RegisterPage> {
                             fontSize: 16.0, color: ColorsConstants.customBlack),
                         controller: _name)),
                 ListTile(
+                    contentPadding: EdgeInsets.all(0.0),
                     leading:
                         Icon(Icons.group, color: ColorsConstants.customBlack),
                     title: TextField(
                         cursorColor: ColorsConstants.customBlack,
                         decoration: new InputDecoration(
                             hintText: 'Class',
-                            contentPadding: new EdgeInsets.only(bottom: 4.0),
+                            contentPadding: new EdgeInsets.only(bottom: 4.0,
+                                top: 8.0),
                             hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
@@ -90,13 +85,15 @@ class RegisterPageState extends State<RegisterPage> {
                             fontSize: 16.0, color: ColorsConstants.customBlack),
                         controller: _class)),
                 ListTile(
+                    contentPadding: EdgeInsets.all(0.0),
                     leading:
                         Icon(Icons.label, color: ColorsConstants.customBlack),
                     title: TextField(
                         cursorColor: ColorsConstants.customBlack,
                         decoration: new InputDecoration(
                             hintText: 'Student id',
-                            contentPadding: new EdgeInsets.only(bottom: 4.0),
+                            contentPadding: new EdgeInsets.only(bottom: 4.0,
+                                top: 8.0),
                             hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
@@ -107,13 +104,15 @@ class RegisterPageState extends State<RegisterPage> {
                             fontSize: 16.0, color: ColorsConstants.customBlack),
                         controller: _number)),
                 ListTile(
+                    contentPadding: EdgeInsets.all(0.0),
                     leading:
                         Icon(Icons.lock, color: ColorsConstants.customBlack),
                     title: TextField(
                         cursorColor: ColorsConstants.customBlack,
                         decoration: new InputDecoration(
                             hintText: 'Password',
-                            contentPadding: new EdgeInsets.only(bottom: 4.0),
+                            contentPadding: new EdgeInsets.only(bottom: 4.0,
+                                top: 8.0),
                             hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
@@ -122,15 +121,18 @@ class RegisterPageState extends State<RegisterPage> {
                                 color: ColorsConstants.customBlack)),
                         style: TextStyle(
                             fontSize: 16.0, color: ColorsConstants.customBlack),
+                        obscureText: true,
                         controller: _password)),
                 ListTile(
+                    contentPadding: EdgeInsets.all(0.0),
                     leading:
                         Icon(Icons.lock, color: ColorsConstants.customBlack),
                     title: TextField(
                       cursorColor: ColorsConstants.customBlack,
                       decoration: new InputDecoration(
                           hintText: 'Confirm password',
-                          contentPadding: new EdgeInsets.only(bottom: 4.0),
+                          contentPadding: new EdgeInsets.only(bottom: 4.0,
+                              top: 8.0),
                           hintStyle: TextStyle(
                               fontSize: 16.0,
                               color: ColorsConstants.customBlack),
@@ -139,6 +141,7 @@ class RegisterPageState extends State<RegisterPage> {
                               color: ColorsConstants.customBlack)),
                       style: TextStyle(
                           fontSize: 16.0, color: ColorsConstants.customBlack),
+                      obscureText: true,
                       controller: _confirmPassword,
                     )),
                 new Container(
@@ -199,39 +202,44 @@ class RegisterPageState extends State<RegisterPage> {
       if (true) {
         var password = Password.hash(
             _password.text,
-            PBKDF2(
-                blockLength: 32, iterationCount: 1000, desiredKeyLength: 32));
+            PBKDF2(iterationCount: 1000));
         print("hash password: $password");
-        Student student = new Student(
-            _number.text, _name.text, int.parse(_class.text), password);
-        var s = new StudentRepository().registerStudent(student);
-        s.then((response) {
-          if (response) {
-            _saveInSharedPrefs(student);
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                'main_page', (Route<dynamic> route) => false);
-          } else {
-            print(response.toString());
-            _onChange('User already exist');
-            _showSnackBar();
-          }
+        Student student = Student(_number.text, _name.text, _class.text, password);
+        var studentResponse =  StudentRepository().registerStudent(student);
+        studentResponse.then((response) {
+          _saveInSharedPrefs(student);
+          Navigator.of(context).pushNamedAndRemoveUntil( 'main_page',
+                  (Route<dynamic> route) => false);
+        }).catchError((error) {
+          _showAlertDialog('Error', error.toString());
         });
       } else {
-        print("Invalid password");
-        _onChange("Invalid password");
-        _showSnackBar(); //example: Aa@^1AfaA  Aaa111aAa
+        _showAlertDialog('Error', 'Invalid password');
       }
     } else {
-      print("Different passwords");
-      _onChange("Different passwords");
-      _showSnackBar();
+      _showAlertDialog('Error', 'Different passwords');
     }
     _clearTextFields();
   }
 
-  void _showSnackBar() {
-    _scaffoldState.currentState
-        .showSnackBar(new SnackBar(content: new Text(_snackBarText)));
+  Future<Null> _showAlertDialog(String title, String content) {
+    return showDialog<Null>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
   void _saveInSharedPrefs(Student student) async {

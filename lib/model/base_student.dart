@@ -3,7 +3,7 @@ import 'package:my_attendances/utils/constants.dart';
 class BaseStudent {
   String _studentId;
   String _studentName;
-  int _studentClass;
+  String _studentClass;
 
   BaseStudent(this._studentId, this._studentName, this._studentClass);
 
@@ -17,8 +17,8 @@ class BaseStudent {
     _studentName = value;
   }
 
-  int get studentClass => _studentClass;
-  set studentClass(int value) {
+  String get studentClass => _studentClass;
+  set studentClass(String value) {
     _studentClass = value;
   }
 

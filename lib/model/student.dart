@@ -5,7 +5,7 @@ import 'package:my_attendances/utils/constants.dart';
 class Student extends BaseStudent{
   String _studentPassword;
 
-  Student(String _studentId, String _studentName, int _studentClass, this._studentPassword): super(_studentId, _studentName, _studentClass);
+  Student(String _studentId, String _studentName, String _studentClass, this._studentPassword): super(_studentId, _studentName, _studentClass);
 
   String get studentPassword => this._studentPassword;
   set studentPassword(String studentPassword) {

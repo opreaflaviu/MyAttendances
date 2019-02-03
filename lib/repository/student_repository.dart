@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:my_attendances/utils/custom_error.dart';
+import 'package:my_attendances/utils/shared_preferences_utils.dart';
+import 'package:password/password.dart';
 import '../model/student.dart';
 import '../utils/constants.dart';
 
 class StudentRepository {
-  Future<Student> loginStudent(studentId, studentPassword) async {
+  Future<bool> loginStudent(studentName, studentPassword, studentId) async {
     var response = await http.post(
         Uri.encodeFull(Constants.rootApi + '/users/login'),
         headers: {
@@ -13,22 +16,27 @@ class StudentRepository {
         },
         body: {
           Constants.studentId: "$studentId",
-          Constants.studentPassword: "$studentPassword"
         });
 
     if (response.statusCode == 200) {
       Map responseData = json.decode(response.body);
       if (responseData['result'] == 'false') {
-        return new Student('', '', 0, '');
+        throw CustomError('User does not exists');
       } else {
-        var studentClass = int.parse(
-            responseData['result'][Constants.studentClass].toString());
-        var studentName = responseData['result'][Constants.studentName];
-        return new Student(
-            studentId, studentName, studentClass, studentPassword);
+        var nameResponse = responseData['result'][Constants.studentName];
+        var passwordResponse = responseData['result'][Constants.studentPassword];
+        var classResponse = responseData['result'][Constants.studentClass];
+
+        if(_validLogin(studentPassword, passwordResponse, studentName, nameResponse)) {
+          Student student = Student(studentId, studentName, classResponse, studentPassword);
+          _saveInSharedPrefs(student);
+          return true;
+        } else {
+          throw CustomError('Wrong credentials');
+        }
       }
     } else {
-      return new Student('', '', 0, '');
+      throw CustomError();
     }
   }
 
@@ -47,14 +55,21 @@ class StudentRepository {
 
     if (response.statusCode == 200) {
       Map responseData = json.decode(response.body);
-
-      if (responseData['result'] == 'false') {
-        return false;
+      if(responseData['result'] == 'false') {
+        throw CustomError('User already exists');
       } else {
         return true;
       }
     } else {
-      return false;
+      throw CustomError("Network connection error");
     }
+  }
+
+  bool _validLogin(password, passwordResponse, studentName, nameResponse) =>
+    Password.verify(password, passwordResponse) && studentName == nameResponse;
+
+  void _saveInSharedPrefs(Student student) async {
+    SharedPreferencesUtils sharedPreferencesUtils = SharedPreferencesUtils();
+    sharedPreferencesUtils.saveStudent(student);
   }
 }

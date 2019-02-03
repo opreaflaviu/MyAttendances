@@ -1,10 +1,10 @@
 abstract class Constants {
 
-  //for testing
-  // static const String rootApi = "http://192.168.0.133:5000";
+  //  for testing
+  static const String rootApi = "http://192.168.0.133:5000";
 
-  //for production
-  static const String rootApi = "http://172.30.0.4:5000";
+  //  for production
+  //  static const String rootApi = "http://172.30.0.4:5000";
 
   static const String teacherId = "teacherId";
 

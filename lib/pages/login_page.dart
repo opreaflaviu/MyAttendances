@@ -12,17 +12,10 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   static final TextEditingController _name = new TextEditingController();
-  static final TextEditingController _number = new TextEditingController();
+  static final TextEditingController _id = new TextEditingController();
   static final TextEditingController _password = new TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldState =
       new GlobalKey<ScaffoldState>();
-  String _snackBarText = '';
-
-  void _onChange(String snackBarText) {
-    setState(() {
-      _snackBarText = snackBarText;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +37,21 @@ class LoginPageState extends State<LoginPage> {
             automaticallyImplyLeading: false),
         body: Center(
           child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
               child: Container(
                 margin: new EdgeInsets.only(right: 32.0, left: 32.0),
                 child: new Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     ListTile(
+                        contentPadding: EdgeInsets.all(0.0),
                         leading: Icon(Icons.person,
                             color: ColorsConstants.customBlack),
                         title: TextField(
                             cursorColor: ColorsConstants.customBlack,
                             decoration: new InputDecoration(
                               hintText: 'Name',
-                              contentPadding: EdgeInsets.only(bottom: 4.0),
+                              contentPadding: EdgeInsets.only(bottom: 4.0,
+                                  top: 8.0),
                               hintStyle: TextStyle(
                                   fontSize: 16.0,
                                   color: ColorsConstants.customBlack),
@@ -69,13 +63,15 @@ class LoginPageState extends State<LoginPage> {
                                 fontSize: 16.0, color: Colors.black),
                             controller: _name)),
                     ListTile(
+                        contentPadding: EdgeInsets.all(0.0),
                         leading: Icon(Icons.label,
                             color: ColorsConstants.customBlack),
                         title: TextField(
                             cursorColor: ColorsConstants.customBlack,
                             decoration: new InputDecoration(
                                 hintText: 'Number',
-                                contentPadding: EdgeInsets.only(bottom: 4.0),
+                                contentPadding: EdgeInsets.only(bottom: 4.0,
+                                    top: 8.0),
                                 hintStyle: TextStyle(
                                     fontSize: 16.0,
                                     color: ColorsConstants.customBlack),
@@ -85,15 +81,17 @@ class LoginPageState extends State<LoginPage> {
                             style: new TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
-                            controller: _number)),
+                            controller: _id)),
                     ListTile(
+                        contentPadding: EdgeInsets.all(0.0),
                         leading: Icon(Icons.lock,
                             color: ColorsConstants.customBlack),
                         title: TextField(
                             cursorColor: ColorsConstants.customBlack,
                             decoration: new InputDecoration(
                                 hintText: 'Password',
-                                contentPadding: EdgeInsets.only(bottom: 4.0),
+                                contentPadding: EdgeInsets.only(bottom: 4.0,
+                                    top: 8.0),
                                 hintStyle: TextStyle(
                                     fontSize: 16.0,
                                     color: ColorsConstants.customBlack),
@@ -103,7 +101,9 @@ class LoginPageState extends State<LoginPage> {
                             style: new TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
-                            controller: _password)),
+                            obscureText: true,
+                            controller: _password)
+                    ),
 
                     new Container(
                       padding: new EdgeInsets.only(top: 16.0),
@@ -155,7 +155,7 @@ class LoginPageState extends State<LoginPage> {
 
   void _clearTextFields() {
     _name.clear();
-    _number.clear();
+    _id.clear();
     _password.clear();
   }
 
@@ -165,41 +165,42 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void _onLoginClick() {
-    var password = Password.hash(_password.text, PBKDF2(blockLength: 32, iterationCount: 1000, desiredKeyLength: 32));
-    print("hash password: $password");
-    var studentResponse =
-        new StudentRepository().loginStudent(_number.text, password);
-    studentResponse.then((student) {
-      print(student);
-      _studentIsValid(student) ? _validStudent(student) : _invalidStudent();
+    var response = StudentRepository().loginStudent(_name.text, _password.text,
+        _id.text);
+    response.then((result) {
+      _navigateToMainPage();
+    }).catchError((error) {
+      if( error.runtimeType.toString() == 'SocketException') {
+        _showAlertDialog('Error', 'Cannot connect to server');
+      }
+
+      _showAlertDialog('Error', error.toString());
     });
   }
 
-  void _invalidStudent() {
-    _onChange("Wrong Credentials");
-    _showSnackBar();
-    _clearTextFields();
-  }
-
-  void _validStudent(Student student) {
-    _saveInSharedPrefs(student);
+  void _navigateToMainPage() {
     Navigator.of(context)
         .pushNamedAndRemoveUntil('main_page', (Route<dynamic> route) => false);
   }
 
-  bool _studentIsValid(Student student) => student.studentName == _name.text &&
-          Password.verify(_password.text, student.studentPassword)
-      ? true
-      : false;
-
-  void _showSnackBar() {
-    _scaffoldState.currentState
-        .showSnackBar(new SnackBar(content: new Text(_snackBarText)));
+  Future<Null> _showAlertDialog(String title, String content) {
+    return showDialog<Null>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(content),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 
-  void _saveInSharedPrefs(Student student) async {
-    SharedPreferencesUtils sharedPreferencesUtils =
-        new SharedPreferencesUtils();
-    sharedPreferencesUtils.saveStudent(student);
-  }
 }
