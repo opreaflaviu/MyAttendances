@@ -72,20 +72,26 @@ class MainPageState extends State<MainPage> implements MainPageView {
     } on FormatException {
       print('user return without scann');
     }
-
-
   }
+
   Future<Null> _showAlertDialog(String title, String content) {
     return showDialog<Null>(
         context: context,
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(title),
-            content: Text(content),
+            title: Text(title,
+                style: TextStyle(
+                  fontSize: 24.0, color: ColorsConstants.customBlack,
+                    fontWeight: FontWeight.bold)),
+            content: Text(content,
+                style: TextStyle(
+                    fontSize: 20.0, color: ColorsConstants.customBlack)),
             actions: <Widget>[
               FlatButton(
-                child: Text('Ok'),
+                child: Text('Ok',
+                    style: TextStyle(
+                        fontSize: 16.0, color: ColorsConstants.customBlack)),
                 onPressed: (){
                   Navigator.of(context).pop();
                 }
@@ -193,24 +199,31 @@ class DisplayAttendancesState extends State<DisplayAttendances> implements Atten
     super.initState();
   }
 
-  Future<Null> _showAlertDialog() {
+  Future<Null> _showAlertDialog(String title, String content) {
     return showDialog<Null>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('No internet connection'),
-          content: Text('Please connect wi-fi or mobile data'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      }
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title,
+                style: TextStyle(
+                    fontSize: 24.0, color: ColorsConstants.customBlack,
+                    fontWeight: FontWeight.bold)),
+            content: Text(content,
+                style: TextStyle(
+                    fontSize: 20.0, color: ColorsConstants.customBlack)),
+            actions: <Widget>[
+              FlatButton(
+                  child: Text('Ok',
+                      style: TextStyle(
+                          fontSize: 16.0, color: ColorsConstants.customBlack)),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  }
+              ),
+            ],
+          );
+        }
     );
   }
 
@@ -232,7 +245,7 @@ class DisplayAttendancesState extends State<DisplayAttendances> implements Atten
       });
       _getAttendances();
     } else {
-      _showAlertDialog();
+      _showAlertDialog('No internet connection', 'Please connect wi-fi or mobile data');
     }
   }
 

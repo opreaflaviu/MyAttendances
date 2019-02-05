@@ -7,19 +7,20 @@ import '../utils/shared_preferences_utils.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
-  RegisterPageState createState() => new RegisterPageState();
+  RegisterPageState createState() => RegisterPageState();
 }
 
 class RegisterPageState extends State<RegisterPage> {
-  static final TextEditingController _name = new TextEditingController();
-  static final TextEditingController _class = new TextEditingController();
-  static final TextEditingController _number = new TextEditingController();
-  static final TextEditingController _password = new TextEditingController();
-  static final TextEditingController _confirmPassword =
-      new TextEditingController();
+  static final TextEditingController _name = TextEditingController();
+  static final TextEditingController _class = TextEditingController();
+  static final TextEditingController _number = TextEditingController();
+  static final TextEditingController _password = TextEditingController();
+  static final TextEditingController _confirmPassword = TextEditingController();
 
-  final GlobalKey<ScaffoldState> _scaffoldState =
-      new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
+
+  bool passwordVisibility = true;
+  bool confirmPasswordVisibility = true;
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +28,13 @@ class RegisterPageState extends State<RegisterPage> {
     var _widthDP = _mediaQuery.size.width;
     var _heightDP = _mediaQuery.size.height;
 
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: ColorsConstants.backgroundColorGreen,
       key: _scaffoldState,
-      appBar: new AppBar(
-          title: new Text("Register",
+      appBar: AppBar(
+          title: Text("Register",
               textAlign: TextAlign.center,
-              style: new TextStyle(
+              style: TextStyle(
                   fontSize: 32.0, color: ColorsConstants.customBlack)),
           centerTitle: true,
           backgroundColor: ColorsConstants.backgroundColorGreen,
@@ -42,7 +43,7 @@ class RegisterPageState extends State<RegisterPage> {
       body: Center(
           child: SingleChildScrollView(
         child: Container(
-            margin: new EdgeInsets.only(right: 32.0, left: 32.0),
+            margin: EdgeInsets.only(right: 32.0, left: 32.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -52,10 +53,10 @@ class RegisterPageState extends State<RegisterPage> {
                         Icon(Icons.person, color: ColorsConstants.customBlack),
                     title: TextField(
                         cursorColor: ColorsConstants.customBlack,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             hintText: 'Name',
-                            contentPadding: new EdgeInsets.only(bottom: 4.0,
-                                top: 8.0),
+                            contentPadding:
+                                EdgeInsets.only(bottom: 4.0, top: 8.0),
                             hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
@@ -71,10 +72,10 @@ class RegisterPageState extends State<RegisterPage> {
                         Icon(Icons.group, color: ColorsConstants.customBlack),
                     title: TextField(
                         cursorColor: ColorsConstants.customBlack,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             hintText: 'Class',
-                            contentPadding: new EdgeInsets.only(bottom: 4.0,
-                                top: 8.0),
+                            contentPadding:
+                                EdgeInsets.only(bottom: 4.0, top: 8.0),
                             hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
@@ -90,10 +91,10 @@ class RegisterPageState extends State<RegisterPage> {
                         Icon(Icons.label, color: ColorsConstants.customBlack),
                     title: TextField(
                         cursorColor: ColorsConstants.customBlack,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             hintText: 'Student id',
-                            contentPadding: new EdgeInsets.only(bottom: 4.0,
-                                top: 8.0),
+                            contentPadding:
+                                EdgeInsets.only(bottom: 4.0, top: 8.0),
                             hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
@@ -109,19 +110,30 @@ class RegisterPageState extends State<RegisterPage> {
                         Icon(Icons.lock, color: ColorsConstants.customBlack),
                     title: TextField(
                         cursorColor: ColorsConstants.customBlack,
-                        decoration: new InputDecoration(
+                        decoration: InputDecoration(
                             hintText: 'Password',
-                            contentPadding: new EdgeInsets.only(bottom: 4.0,
-                                top: 8.0),
+                            contentPadding:
+                                EdgeInsets.only(bottom: 4.0, top: 8.0),
                             hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: ColorsConstants.customBlack),
                             labelStyle: TextStyle(
                                 fontSize: 16.0,
-                                color: ColorsConstants.customBlack)),
+                                color: ColorsConstants.customBlack),
+                            suffix: GestureDetector(
+                              child: Icon(this.passwordVisibility
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                              onTap: () {
+                                setState(() {
+                                  this.passwordVisibility =
+                                      !this.passwordVisibility;
+                                });
+                              },
+                            )),
                         style: TextStyle(
                             fontSize: 16.0, color: ColorsConstants.customBlack),
-                        obscureText: true,
+                        obscureText: this.passwordVisibility,
                         controller: _password)),
                 ListTile(
                     contentPadding: EdgeInsets.all(0.0),
@@ -129,52 +141,63 @@ class RegisterPageState extends State<RegisterPage> {
                         Icon(Icons.lock, color: ColorsConstants.customBlack),
                     title: TextField(
                       cursorColor: ColorsConstants.customBlack,
-                      decoration: new InputDecoration(
+                      decoration: InputDecoration(
                           hintText: 'Confirm password',
-                          contentPadding: new EdgeInsets.only(bottom: 4.0,
-                              top: 8.0),
+                          contentPadding:
+                              EdgeInsets.only(bottom: 4.0, top: 8.0),
                           hintStyle: TextStyle(
                               fontSize: 16.0,
                               color: ColorsConstants.customBlack),
                           labelStyle: TextStyle(
                               fontSize: 16.0,
-                              color: ColorsConstants.customBlack)),
+                              color: ColorsConstants.customBlack),
+                          suffix: GestureDetector(
+                            child: Icon(this.confirmPasswordVisibility
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                            onTap: () {
+                              setState(() {
+                                this.confirmPasswordVisibility =
+                                    !this.confirmPasswordVisibility;
+                              });
+                            },
+                          )),
                       style: TextStyle(
                           fontSize: 16.0, color: ColorsConstants.customBlack),
-                      obscureText: true,
+                      obscureText: this.confirmPasswordVisibility,
                       controller: _confirmPassword,
                     )),
-                new Container(
-                  padding: new EdgeInsets.only(top: 16.0),
+                Container(
+                  padding: EdgeInsets.only(top: 16.0),
                 ),
-                new Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     RaisedButton(
-                      padding: new EdgeInsets.fromLTRB(_widthDP * 0.10,
+                      padding: EdgeInsets.fromLTRB(_widthDP * 0.10,
                           _heightDP * 0.01, _widthDP * 0.10, _heightDP * 0.01),
-                      child: new Text("Back",
+                      child: Text("Back",
                           style: TextStyle(
                               color: ColorsConstants.customBlack,
                               fontSize: 16.0)),
                       onPressed: (() => _onBackClick(context)),
                       splashColor: Colors.white,
                       color: Colors.white,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
                     ),
-                    new RaisedButton(
-                      padding: new EdgeInsets.fromLTRB(_widthDP * 0.07,
+                    RaisedButton(
+                      padding: EdgeInsets.fromLTRB(_widthDP * 0.07,
                           _heightDP * 0.01, _widthDP * 0.07, _heightDP * 0.01),
-                      child: new Text("Register",
+                      child: Text("Register",
                           style: TextStyle(
                               color: ColorsConstants.customBlack,
                               fontSize: 16.0)),
                       onPressed: _onRegisterClick,
                       splashColor: Colors.white,
                       color: Colors.white,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
                     ),
                   ],
                 ),
@@ -200,16 +223,16 @@ class RegisterPageState extends State<RegisterPage> {
   void _onRegisterClick() {
     if (_password.text == _confirmPassword.text) {
       if (true) {
-        var password = Password.hash(
-            _password.text,
-            PBKDF2(iterationCount: 1000));
+        var password =
+            Password.hash(_password.text, PBKDF2(iterationCount: 1000));
         print("hash password: $password");
-        Student student = Student(_number.text, _name.text, _class.text, password);
-        var studentResponse =  StudentRepository().registerStudent(student);
+        Student student =
+            Student(_number.text, _name.text, _class.text, password);
+        var studentResponse = StudentRepository().registerStudent(student);
         studentResponse.then((response) {
           _saveInSharedPrefs(student);
-          Navigator.of(context).pushNamedAndRemoveUntil( 'main_page',
-                  (Route<dynamic> route) => false);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              'main_page', (Route<dynamic> route) => false);
         }).catchError((error) {
           _showAlertDialog('Error', error.toString());
         });
@@ -232,7 +255,10 @@ class RegisterPageState extends State<RegisterPage> {
             content: Text(content),
             actions: <Widget>[
               FlatButton(
-                child: Text('Ok'),
+                child: Text('Ok',
+                    style: TextStyle(
+                    fontSize: 16.0, color: ColorsConstants.customBlack)
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -243,8 +269,7 @@ class RegisterPageState extends State<RegisterPage> {
   }
 
   void _saveInSharedPrefs(Student student) async {
-    SharedPreferencesUtils sharedPreferencesUtils =
-        new SharedPreferencesUtils();
+    SharedPreferencesUtils sharedPreferencesUtils = SharedPreferencesUtils();
     sharedPreferencesUtils.saveStudent(student);
   }
 }

@@ -23,6 +23,7 @@ class LandingPageState extends State<LandingPage> {
 
     return new Scaffold(
       backgroundColor: ColorsConstants.backgroundColorGreen,
+      resizeToAvoidBottomPadding: false,
       key: _scaffoldState,
       body: new Container(
           padding: new EdgeInsets.symmetric(),
