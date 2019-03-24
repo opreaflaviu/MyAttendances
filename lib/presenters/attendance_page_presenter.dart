@@ -14,6 +14,6 @@ class AttendancePagePresenter {
   void getAttendances() {
     _attendanceRepository.getAttendanceForStudent()
         .then((attendanceList) => _attendanceBodyView.onLoadAttendancesComplete(attendanceList))
-        .catchError((e) => _attendanceBodyView.onLoadAttendancesError());
+        .catchError((e) => _attendanceBodyView.onLoadAttendancesError(e));
   }
 }

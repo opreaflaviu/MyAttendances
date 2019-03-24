@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:my_attendances/model/base_student.dart';
+import 'package:my_attendances/model/grade.dart';
 import '../model/attendance.dart';
 import '../model/course.dart';
 import '../model/course_attendances.dart';
@@ -22,7 +23,6 @@ class AttendanceRepository {
 
     if (response.statusCode == 200) {
       var responseData = jsonDecode(response.body);
-
       List<CourseAttendances> courseAttendancesList = List();
       for (var data in responseData['result']) {
         var courseName = data[Constants.courseName];
@@ -30,9 +30,11 @@ class AttendanceRepository {
         for (var attendance in data['attendances']) {
           var courseDate = attendance[Constants.courseCreatedAt];
           var courseType = attendance[Constants.courseType];
-          var courseNumber = attendance[Constants.courseNumber];
+          var courseNumber = int.parse(attendance[Constants.courseNumber]);
           var courseTeacher = attendance[Constants.courseTeacher];
-          var course = Course(null, courseType,  null, courseTeacher, null, courseDate, courseNumber);
+          var grade = int.parse(attendance[Constants.grade]);
+          var course = Course(null, courseType,  null, courseTeacher, null,
+            courseDate, courseNumber, grade);
           courseAttendance.addCourse(course);
         }
         courseAttendancesList.add(courseAttendance);
@@ -52,9 +54,9 @@ class AttendanceRepository {
     String courseTeacher = attendanceSplit.elementAt(3);
     String courseTeacherId = attendanceSplit.elementAt(4);
     String courseCreatedAt = attendanceSplit.elementAt(5);
-    String courseNumber = attendanceSplit.elementAt(6).toString();
+    int courseNumber = int.parse(attendanceSplit.elementAt(6));
     var course = Course(courseName, courseType, courseClass, courseTeacher, courseTeacherId,
-        courseCreatedAt, courseNumber);
+        courseCreatedAt, courseNumber, 0);
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var studentId = sharedPreferences.get(Constants.studentId);
@@ -62,13 +64,16 @@ class AttendanceRepository {
     var studentClass = sharedPreferences.get(Constants.studentClass);
     var student = BaseStudent(studentId, studentName, studentClass);
 
+    var grade = Grade(0);
+
     var attendance = Attendance(
-        DateTime.now().toIso8601String(), attendanceString, course, student);
+        DateTime.now().toIso8601String(), attendanceString, course, student,
+        grade);
 
     var response = await http.post(
         Uri.encodeFull(Constants.rootApi + '/attendance/add'),
         headers: {"Accept": "application/json"},
-        body: {'attendance': json.encode(attendance.toJSON())});
+        body: {'attendance': json.encode(attendance.toJson())});
 
     if (response.statusCode == 200) {
       var responseData = json.decode(response.body);

@@ -12,14 +12,14 @@ class Student extends BaseStudent{
     this._studentPassword = studentPassword;
   }
 
-  Student.fromJSON(Map map): super(map[Constants.studentId], map[Constants.studentName],map[Constants.studentClass]) {
+  Student.fromJson(Map map): super(map[Constants.studentId], map[Constants.studentName],map[Constants.studentClass]) {
     this._studentPassword = map[Constants.studentPassword];
   }
 
 
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toJson() {
     var map = new Map<String, dynamic>();
-    map = super.toJSON();
+    map = super.toJson();
     map[Constants.studentPassword] = this._studentPassword;
     return map;
   }

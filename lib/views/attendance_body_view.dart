@@ -3,5 +3,5 @@ import 'package:quiver/collection.dart';
 
 abstract class AttendanceBodyView {
   void onLoadAttendancesComplete(List<CourseAttendances> attendanceList);
-  void onLoadAttendancesError();
+  void onLoadAttendancesError(Error e);
 }

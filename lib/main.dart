@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
               );
             case ConnectionState.done:
               if (snapshot.hasError) {
+                print('Error: ' + snapshot.error.toString());
                 return Scaffold(
                   body: Center(
                     child: Text('An error was encountered'),
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
   getFromSharedPreferences() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var studentName = sharedPreferences.getString(Constants.studentName);
-    var studentClass = sharedPreferences.getInt(Constants.studentClass);
+    var studentClass = sharedPreferences.getString(Constants.studentClass);
     var studentNumber = sharedPreferences.getString(Constants.studentId);
 
     return studentName != null && studentClass != null && studentNumber != null;

@@ -158,7 +158,7 @@ class DisplayAttendancesState extends State<DisplayAttendances> implements Atten
                         ),
 
                         children: attendance.attendanceList
-                            .map((val) =>
+                            .map((studentAttendance) =>
                             ListTile(
                               title: Padding(
                                 padding: EdgeInsets.only(left: 20.0),
@@ -168,15 +168,18 @@ class DisplayAttendancesState extends State<DisplayAttendances> implements Atten
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('${val.type} ${val.number}'),
+                                        Text('${studentAttendance.type} ${studentAttendance.number}'),
                                         Padding(padding: EdgeInsets.all(8.0)),
-                                        Text('${val.teacher}')
+                                        Text('${studentAttendance.teacher}')
                                       ],
                                     ),
                                     Padding(padding: EdgeInsets.all(4.0)),
                                     Row(mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Text('${val.createdAt}'.substring(0, 16)),
+                                        Text('${studentAttendance.createdAt}'.substring(0, 16)),
+                                        Padding(padding: EdgeInsets.all(8.0)),
+                                        Text('Grade: ${studentAttendance
+                                            .grade}'),
                                       ],
                                     )
                                   ],
@@ -251,8 +254,8 @@ class DisplayAttendancesState extends State<DisplayAttendances> implements Atten
 
 
   @override
-  void onLoadAttendancesError() {
-
+  void onLoadAttendancesError(Error e) {
+    print("error " + e.toString());
   }
 
   @override

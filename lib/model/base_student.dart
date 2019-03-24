@@ -28,7 +28,7 @@ class BaseStudent {
     this._studentClass = map[Constants.studentClass];
   }
 
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toJson() {
     var map = new Map<String, dynamic>();
     map[Constants.studentId] = this._studentId;
     map[Constants.studentName] = this._studentName;

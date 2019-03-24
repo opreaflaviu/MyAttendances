@@ -26,7 +26,6 @@ class SharedPreferencesUtils {
       sharedPrefs.setString(Constants.studentId, student.studentId);
       sharedPrefs.setString(Constants.studentClass, student.studentClass);
       sharedPrefs.setString(Constants.studentPassword, student.studentPassword);
-      print('shared' + sharedPrefs.getString(Constants.studentName));
     });
 
 
