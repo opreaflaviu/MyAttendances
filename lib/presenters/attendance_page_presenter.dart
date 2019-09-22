@@ -1,5 +1,3 @@
-import 'package:my_attendances/model/course_attendances.dart';
-
 import '../repository/attendance_repository.dart';
 import '../views/attendance_body_view.dart';
 

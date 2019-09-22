@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:my_attendances/model/base_student.dart';
 import 'package:my_attendances/model/grade.dart';
+import 'package:my_attendances/utils/custom_error.dart';
 import '../model/attendance.dart';
 import '../model/course.dart';
 import '../model/course_attendances.dart';
@@ -39,10 +40,9 @@ class AttendanceRepository {
         }
         courseAttendancesList.add(courseAttendance);
       }
-
       return courseAttendancesList;
     } else {
-      throw Exception("Error");
+      throw Exception();
     }
   }
 
@@ -84,7 +84,7 @@ class AttendanceRepository {
         return true;
       }
     } else {
-      throw Exception('Error');
+      throw CustomError('Error');
     }
   }
 }

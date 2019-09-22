@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:my_attendances/model/course_attendances.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
-import 'package:quiver/collection.dart';
 
 import '../presenters/main_page_presenter.dart';
 import '../presenters/attendance_page_presenter.dart';
@@ -255,7 +253,7 @@ class DisplayAttendancesState extends State<DisplayAttendances> implements Atten
 
   @override
   void onLoadAttendancesError(Error e) {
-    print("error " + e.toString());
+    print("error: $e");
   }
 
   @override
